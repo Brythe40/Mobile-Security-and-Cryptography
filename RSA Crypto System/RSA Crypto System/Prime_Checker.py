@@ -60,6 +60,7 @@ class Prime_Checker:
 
     def decrypt(message, key):
         d = key['d']
+        print("private key d: ", d)
         p = key['p']
         q = key['q']
         n = p * q
@@ -67,17 +68,31 @@ class Prime_Checker:
         return ''.join(decrypted)
 
     def exhaustive_search(key):
+        print("Starting exhaustive search...")
         e = key['e']
         n = key['n']
         start_time = time.time()
         d = 2
-        primes = Prime_Checker.get_primes(n)
-        p = primes[9]
-        q = primes[18]
         while True:
-            if (e * d) % ((p - 1) * (q - 1)) == 1:
+            if (e * d) % Prime_Checker.phi(n) == 1:
                 break
             d += 1
         end_time = time.time()
         print("Exhuastive search found private key (d): ", d, " in ", end_time - start_time, "seconds")
+
+    def phi(number):
+        result = 1
+        p = 2
+        while p * p <= number:
+            if number % p == 0:
+                count = 0
+                while number % p == 0:
+                    number //= p
+                    count += 1
+                result *= (p - 1) * p**(count - 1)
+            p += 1
+        if number > 1:
+            result *= number - 1
+        return result
+
     pass

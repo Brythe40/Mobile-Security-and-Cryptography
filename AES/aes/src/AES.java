@@ -1,3 +1,5 @@
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HexFormat;
 
 public class AES {
@@ -55,191 +57,256 @@ public class AES {
   };
 
   private final byte[][] expandedKey = {
-      { (byte) 0x73, (byte) 0x65, (byte) 0x63, (byte) 0x73 },
-      { (byte) 0x65, (byte) 0x74, (byte) 0x72, (byte) 0x65 },
-      { (byte) 0x63, (byte) 0x73, (byte) 0x65, (byte) 0x63 },
-      { (byte) 0x72, (byte) 0x65, (byte) 0x74, (byte) 0x72 },
+    { (byte) 0x73, (byte) 0x65, (byte) 0x63, (byte) 0x73 },
+    { (byte) 0x65, (byte) 0x74, (byte) 0x72, (byte) 0x65 },
+    { (byte) 0x63, (byte) 0x73, (byte) 0x65, (byte) 0x63 },
+    { (byte) 0x72, (byte) 0x65, (byte) 0x74, (byte) 0x72 },
 
-      { (byte) 0x3f, (byte) 0x5a, (byte) 0x39, (byte) 0x4a },
-      { (byte) 0x9e, (byte) 0xea, (byte) 0x98, (byte) 0xfd },
-      { (byte) 0x23, (byte) 0x50, (byte) 0x35, (byte) 0x56 },
-      { (byte) 0xfd, (byte) 0x98, (byte) 0xec, (byte) 0x9e },
+    { (byte) 0x3f, (byte) 0x5a, (byte) 0x39, (byte) 0x4a },
+    { (byte) 0x9e, (byte) 0xea, (byte) 0x98, (byte) 0xfd },
+    { (byte) 0x23, (byte) 0x50, (byte) 0x35, (byte) 0x56 },
+    { (byte) 0xfd, (byte) 0x98, (byte) 0xec, (byte) 0x9e },
 
-      { (byte) 0x69, (byte) 0x33, (byte) 0x0a, (byte) 0x40 },
-      { (byte) 0x2f, (byte) 0xc5, (byte) 0x5d, (byte) 0xa0 },
-      { (byte) 0x28, (byte) 0x78, (byte) 0x4d, (byte) 0x1b },
-      { (byte) 0x2b, (byte) 0xb3, (byte) 0x5f, (byte) 0xc1 },
+    { (byte) 0x69, (byte) 0x33, (byte) 0x0a, (byte) 0x40 },
+    { (byte) 0x2f, (byte) 0xc5, (byte) 0x5d, (byte) 0xa0 },
+    { (byte) 0x28, (byte) 0x78, (byte) 0x4d, (byte) 0x1b },
+    { (byte) 0x2b, (byte) 0xb3, (byte) 0x5f, (byte) 0xc1 },
 
-      { (byte) 0x8d, (byte) 0xbe, (byte) 0xb4, (byte) 0xf4 },
-      { (byte) 0x80, (byte) 0x45, (byte) 0x18, (byte) 0xb8 },
-      { (byte) 0x50, (byte) 0x28, (byte) 0x65, (byte) 0x7e },
-      { (byte) 0x22, (byte) 0x91, (byte) 0xce, (byte) 0x0f },
+    { (byte) 0x8d, (byte) 0xbe, (byte) 0xb4, (byte) 0xf4 },
+    { (byte) 0x80, (byte) 0x45, (byte) 0x18, (byte) 0xb8 },
+    { (byte) 0x50, (byte) 0x28, (byte) 0x65, (byte) 0x7e },
+    { (byte) 0x22, (byte) 0x91, (byte) 0xce, (byte) 0x0f },
 
-      { (byte) 0xe9, (byte) 0x57, (byte) 0xe3, (byte) 0x17 },
-      { (byte) 0x73, (byte) 0x36, (byte) 0x2e, (byte) 0x96 },
-      { (byte) 0x26, (byte) 0x0e, (byte) 0x6b, (byte) 0x15 },
-      { (byte) 0x9d, (byte) 0x0c, (byte) 0xc2, (byte) 0xcd },
+    { (byte) 0xe9, (byte) 0x57, (byte) 0xe3, (byte) 0x17 },
+    { (byte) 0x73, (byte) 0x36, (byte) 0x2e, (byte) 0x96 },
+    { (byte) 0x26, (byte) 0x0e, (byte) 0x6b, (byte) 0x15 },
+    { (byte) 0x9d, (byte) 0x0c, (byte) 0xc2, (byte) 0xcd },
 
-      { (byte) 0x69, (byte) 0x3e, (byte) 0xdd, (byte) 0xca },
-      { (byte) 0x2a, (byte) 0x1c, (byte) 0x32, (byte) 0xa4 },
-      { (byte) 0x9b, (byte) 0x95, (byte) 0xfe, (byte) 0xeb },
-      { (byte) 0x6d, (byte) 0x61, (byte) 0xa3, (byte) 0x6e },
+    { (byte) 0x69, (byte) 0x3e, (byte) 0xdd, (byte) 0xca },
+    { (byte) 0x2a, (byte) 0x1c, (byte) 0x32, (byte) 0xa4 },
+    { (byte) 0x9b, (byte) 0x95, (byte) 0xfe, (byte) 0xeb },
+    { (byte) 0x6d, (byte) 0x61, (byte) 0xa3, (byte) 0x6e },
 
-      { (byte) 0x00, (byte) 0x3e, (byte) 0xe3, (byte) 0x29 },
-      { (byte) 0xc3, (byte) 0xdf, (byte) 0xed, (byte) 0x49 },
-      { (byte) 0x04, (byte) 0x91, (byte) 0x6f, (byte) 0x84 },
-      { (byte) 0x19, (byte) 0x78, (byte) 0xdb, (byte) 0xb5 },
+    { (byte) 0x00, (byte) 0x3e, (byte) 0xe3, (byte) 0x29 },
+    { (byte) 0xc3, (byte) 0xdf, (byte) 0xed, (byte) 0x49 },
+    { (byte) 0x04, (byte) 0x91, (byte) 0x6f, (byte) 0x84 },
+    { (byte) 0x19, (byte) 0x78, (byte) 0xdb, (byte) 0xb5 },
 
-      { (byte) 0x7b, (byte) 0x45, (byte) 0xa6, (byte) 0x8f },
-      { (byte) 0x9c, (byte) 0x43, (byte) 0xae, (byte) 0xe7 },
-      { (byte) 0xd1, (byte) 0x40, (byte) 0x2f, (byte) 0xab },
-      { (byte) 0xbc, (byte) 0xc4, (byte) 0x1f, (byte) 0xaa },
+    { (byte) 0x7b, (byte) 0x45, (byte) 0xa6, (byte) 0x8f },
+    { (byte) 0x9c, (byte) 0x43, (byte) 0xae, (byte) 0xe7 },
+    { (byte) 0xd1, (byte) 0x40, (byte) 0x2f, (byte) 0xab },
+    { (byte) 0xbc, (byte) 0xc4, (byte) 0x1f, (byte) 0xaa },
 
-      { (byte) 0x6f, (byte) 0x2a, (byte) 0x8c, (byte) 0x03 },
-      { (byte) 0xfe, (byte) 0xbd, (byte) 0x13, (byte) 0xf4 },
-      { (byte) 0x7d, (byte) 0x3d, (byte) 0x12, (byte) 0xb9 },
-      { (byte) 0xcf, (byte) 0x0b, (byte) 0x14, (byte) 0xbe },
+    { (byte) 0x6f, (byte) 0x2a, (byte) 0x8c, (byte) 0x03 },
+    { (byte) 0xfe, (byte) 0xbd, (byte) 0x13, (byte) 0xf4 },
+    { (byte) 0x7d, (byte) 0x3d, (byte) 0x12, (byte) 0xb9 },
+    { (byte) 0xcf, (byte) 0x0b, (byte) 0x14, (byte) 0xbe },
 
-      { (byte) 0xcb, (byte) 0xe1, (byte) 0x6d, (byte) 0x6e },
-      { (byte) 0xa8, (byte) 0x15, (byte) 0x06, (byte) 0xf2 },
-      { (byte) 0xd3, (byte) 0xee, (byte) 0xfc, (byte) 0x45 },
-      { (byte) 0xb4, (byte) 0xbf, (byte) 0xab, (byte) 0x15 },
+    { (byte) 0xcb, (byte) 0xe1, (byte) 0x6d, (byte) 0x6e },
+    { (byte) 0xa8, (byte) 0x15, (byte) 0x06, (byte) 0xf2 },
+    { (byte) 0xd3, (byte) 0xee, (byte) 0xfc, (byte) 0x45 },
+    { (byte) 0xb4, (byte) 0xbf, (byte) 0xab, (byte) 0x15 },
 
-      { (byte) 0x74, (byte) 0x95, (byte) 0xf8, (byte) 0x96 },
-      { (byte) 0xc6, (byte) 0xd3, (byte) 0xd5, (byte) 0x27 },
-      { (byte) 0x8a, (byte) 0x64, (byte) 0x98, (byte) 0xdd },
-      { (byte) 0x2b, (byte) 0x94, (byte) 0x3f, (byte) 0x2a },
+    { (byte) 0x74, (byte) 0x95, (byte) 0xf8, (byte) 0x96 },
+    { (byte) 0xc6, (byte) 0xd3, (byte) 0xd5, (byte) 0x27 },
+    { (byte) 0x8a, (byte) 0x64, (byte) 0x98, (byte) 0xdd },
+    { (byte) 0x2b, (byte) 0x94, (byte) 0x3f, (byte) 0x2a },
   };
 
   public byte[] encrypt(byte[] key, byte[] data){
+    byte[][] encryptedBlocks;
+    byte[][] plaintextBlocks;
+    byte[] returnVal;
     byte[][] rdSubBytes;
     byte[][] rdShift;
     byte[][] rdMix;
     byte[][] rdSubKey;
-    byte[] encryptedData = {0};
 
     // byte[][] expandedKey = keyExpansion(key);
 
-    byte[][] state = to2DArray(data);
+    // add 1 to account for partial block filled with remainder bytes;
+    // in the case data length is multiple of 16, add 1 for padding block according to PKCS#7 standard
+    int numberOfBlocks = (data.length / 16) + 1;
+    int partialBlockLength = data.length % 16;
+    // following PKCS#7 Standard where value of padding bytes equals the number of bytes needed to be added
+    int valueOfPaddingBytes = 16 - partialBlockLength;
+    byte[] paddingBytes = new byte[valueOfPaddingBytes];
+    Arrays.fill(paddingBytes, (byte)valueOfPaddingBytes);
 
-    HexFormat formatHexPrint = HexFormat.ofDelimiter(" ").withUpperCase();
+    // declare plaintext and encryptedBlocks
+    plaintextBlocks = new byte[numberOfBlocks][16];
+    encryptedBlocks = new byte[numberOfBlocks][16];
 
-    System.out.println("Plaintext:");
-    System.out.println(formatHexPrint.formatHex(data));
+    int currentStartingIndex = 0;
+    // break plaintext data into 16-byte blocks, except for last block
+    for(int i = 0; i < numberOfBlocks - 1; i++){
+      plaintextBlocks[i] = Arrays.copyOfRange(data, currentStartingIndex, currentStartingIndex + 16);
+      currentStartingIndex += 16;
+    }
+    // for last block, copy remaining bytes in plaintext and then fill rest with padding bytes
+    System.arraycopy(data, currentStartingIndex, plaintextBlocks[numberOfBlocks - 1], 0, partialBlockLength);
+    System.arraycopy(paddingBytes, 0, plaintextBlocks[numberOfBlocks - 1], partialBlockLength, valueOfPaddingBytes);
 
-    System.out.println("Initial Key:");
-    rdSubKey = grabSubkey(expandedKey, 0);
-    System.out.println(formatHexPrint.formatHex(to1DArray(rdSubKey)));
+    // encrypt each block
+    for(int i = 0; i < numberOfBlocks; i++){
+      byte[][] state = to2DArray(plaintextBlocks[i]);
+      HexFormat formatHexPrint = HexFormat.ofDelimiter(" ").withUpperCase();
 
-    System.out.println("Round 1 Input:");
-    byte[][] rdAddKey = addRoundKey(state, rdSubKey);
-    System.out.println(formatHexPrint.formatHex(to1DArray(rdAddKey)));
+      // System.out.println("PlaintextBlock:");
+      // System.out.println(formatHexPrint.formatHex(plaintextBlocks[i]));
 
-    for (int i = 1; i < 10; i++) {
-      System.out.println("Round " + i + " Sub Bytes:");
+      // System.out.println("Initial Key:");
+      rdSubKey = grabSubkey(expandedKey, 0);
+      // System.out.println(formatHexPrint.formatHex(to1DArray(rdSubKey)));
+
+      // System.out.println("Round 1 Input:");
+      byte[][] rdAddKey = addRoundKey(state, rdSubKey);
+      // System.out.println(formatHexPrint.formatHex(to1DArray(rdAddKey)));
+
+      for (int j = 1; j < 10; j++) {
+        // System.out.println("Round " + j + " Sub Bytes:");
+        rdSubBytes = subBytes(rdAddKey);
+        // System.out.println(formatHexPrint.formatHex(to1DArray(rdSubBytes)));
+
+        // System.out.println("Round " + j + " Shift Rows:");
+        rdShift = shiftRows(rdSubBytes);
+        // System.out.println(formatHexPrint.formatHex(to1DArray(rdShift)));
+
+        // System.out.println("Round " + j + " Mix Columns:");
+        rdMix = mixColumns(rdShift);
+        // System.out.println(formatHexPrint.formatHex(to1DArray(rdMix)));
+
+        // System.out.println("Round " + j + " Subkey:");
+        rdSubKey = grabSubkey(expandedKey, j);
+        // System.out.println(formatHexPrint.formatHex(to1DArray(rdSubKey)));
+
+        // System.out.println("Round " + j + " Add Round Key:");
+        rdAddKey = addRoundKey(rdMix, rdSubKey);
+        // System.out.println(formatHexPrint.formatHex(to1DArray(rdAddKey)));
+      }
+
+      // System.out.println("Round 10 Sub Bytes:");
       rdSubBytes = subBytes(rdAddKey);
-      System.out.println(formatHexPrint.formatHex(to1DArray(rdSubBytes)));
+      // System.out.println(formatHexPrint.formatHex(to1DArray(rdSubBytes)));
 
-      System.out.println("Round " + i + " Shift Rows:");
+      // System.out.println("Round 10 Shift Rows:");
       rdShift = shiftRows(rdSubBytes);
-      System.out.println(formatHexPrint.formatHex(to1DArray(rdShift)));
+      // System.out.println(formatHexPrint.formatHex(to1DArray(rdShift)));
 
-      System.out.println("Round " + i + " Mix Columns:");
-      rdMix = mixColumns(rdShift);
-      System.out.println(formatHexPrint.formatHex(to1DArray(rdMix)));
+      // System.out.println("Round 10 Subkey:");
+      rdSubKey = grabSubkey(expandedKey, 10);
+      // System.out.println(formatHexPrint.formatHex(to1DArray(rdSubKey)));
 
-      System.out.println("Round " + i + " Subkey:");
-      rdSubKey = grabSubkey(expandedKey, i);
-      System.out.println(formatHexPrint.formatHex(to1DArray(rdSubKey)));
+      // System.out.println("Round 10 Add Round Key:");
+      rdAddKey = addRoundKey(rdShift, rdSubKey);
+      // System.out.println(formatHexPrint.formatHex(to1DArray(rdAddKey)));
 
-      System.out.println("Round " + i + " Add Round Key:");
-      rdAddKey = addRoundKey(rdMix, rdSubKey);
-      System.out.println(formatHexPrint.formatHex(to1DArray(rdAddKey)));
+      encryptedBlocks[i] = to1DArray(rdAddKey);
     }
 
-    System.out.println("Round 10 Sub Bytes:");
-    rdSubBytes = subBytes(rdAddKey);
-    System.out.println(formatHexPrint.formatHex(to1DArray(rdSubBytes)));
-
-    System.out.println("Round 10 Shift Rows:");
-    rdShift = shiftRows(rdSubBytes);
-    System.out.println(formatHexPrint.formatHex(to1DArray(rdShift)));
-
-    System.out.println("Round 10 Subkey:");
-    rdSubKey = grabSubkey(expandedKey, 10);
-    System.out.println(formatHexPrint.formatHex(to1DArray(rdSubKey)));
-
-    System.out.println("Round 10 Add Round Key:");
-    rdAddKey = addRoundKey(rdShift, rdSubKey);
-    System.out.println(formatHexPrint.formatHex(to1DArray(rdAddKey)));
-
-    encryptedData = to1DArray(rdAddKey);
-    return encryptedData;
+    // flatten encrypted blocks into 1D row major return val array
+    returnVal = new byte[16*numberOfBlocks];
+    int k = 0;  
+    for (int i = 0; i < numberOfBlocks; i++) { 
+        for (int j = 0; j < 16; j++) { 
+            returnVal[k++] = encryptedBlocks[i][j]; 
+        } 
+    } 
+    return returnVal;
   }
 
   public byte[] decrypt(byte[] key, byte[] data){
+    byte[][] encryptedBlocks;
+    byte[][] decryptedBlocks;
     byte[][] rdInvSubBytes;
     byte[][] rdInvShift;
     byte[][] rdInvMix;
     byte[][] rdSubKey;
-    byte[] decryptedData = {0};
+    byte[] returnVal;
 
     // byte[][] expandedKey = keyExpansion(key);
 
-    byte[][] state = to2DArray(data);
+    // data will be a multiple of 16
+    int numberOfBlocks = data.length / 16;
+    // declare decryptedBlocks and encryptedBlocks
+    encryptedBlocks = new byte[numberOfBlocks][16];
+    decryptedBlocks = new byte[numberOfBlocks][16];
 
-    HexFormat formatHexPrint = HexFormat.ofDelimiter(" ").withUpperCase();
-
-    System.out.println("Encrypted Data:");
-    System.out.println(formatHexPrint.formatHex(data));
-
-    System.out.println("Round 10 Key:");
-    rdSubKey = grabSubkey(expandedKey, 10);
-    System.out.println(formatHexPrint.formatHex(to1DArray(rdSubKey)));
-
-    System.out.println("Round 10 Input:");
-    byte[][] rdAddKey = addRoundKey(state, rdSubKey);
-    System.out.println(formatHexPrint.formatHex(to1DArray(rdAddKey)));
-
-    System.out.println("Round 10 Inverse Shift Rows:");
-    rdInvShift = invShiftRows(rdAddKey);
-    System.out.println(formatHexPrint.formatHex(to1DArray(rdInvShift)));
-
-    System.out.println("Round 10 Inverse Sub Bytes:");
-    rdInvSubBytes = invSubBytes(rdInvShift);
-    System.out.println(formatHexPrint.formatHex(to1DArray(rdInvSubBytes)));
-
-    for (int i = 9; i > 0; i--) {
-      System.out.println("Round " + i + " Subkey:");
-      rdSubKey = grabSubkey(expandedKey, i);
-      System.out.println(formatHexPrint.formatHex(to1DArray(rdSubKey)));
-
-      System.out.println("Round " + i + " Add Round Key:");
-      rdAddKey = addRoundKey(rdInvSubBytes, rdSubKey);
-      System.out.println(formatHexPrint.formatHex(to1DArray(rdAddKey)));
-
-      System.out.println("Round " + i + " Inverse Mix Columns:");
-      rdInvMix = invMixColumns(rdAddKey);
-      System.out.println(formatHexPrint.formatHex(to1DArray(rdInvMix)));
-
-      System.out.println("Round " + i + " Inverse Shift Rows:");
-      rdInvShift = invShiftRows(rdInvMix);
-      System.out.println(formatHexPrint.formatHex(to1DArray(rdInvShift)));
-
-      System.out.println("Round " + i + " Inverse Sub Bytes:");
-      rdInvSubBytes = invSubBytes(rdInvShift);
-      System.out.println(formatHexPrint.formatHex(to1DArray(rdInvSubBytes)));
+    int currentStartingIndex = 0;
+    // break encrypted data into 16-byte encrypted blocks
+    for(int i = 0; i < numberOfBlocks; i++){
+      encryptedBlocks[i] = Arrays.copyOfRange(data, currentStartingIndex, currentStartingIndex + 16);
+      currentStartingIndex += 16;
     }
-    System.out.println("Final Key:");
-    rdSubKey = grabSubkey(expandedKey, 0);
-    System.out.println(formatHexPrint.formatHex(to1DArray(rdSubKey)));
 
-    System.out.println("Final Add Key:");
-    rdAddKey = addRoundKey(rdInvSubBytes, rdSubKey);
-    System.out.println(formatHexPrint.formatHex(to1DArray(rdAddKey)));
+    // decrypt each block
+    for(int i = 0; i < numberOfBlocks; i++){
 
-    decryptedData = to1DArray(rdAddKey);
-    return decryptedData;
+      byte[][] state = to2DArray(encryptedBlocks[i]);
+
+      HexFormat formatHexPrint = HexFormat.ofDelimiter(" ").withUpperCase();
+
+      // System.out.println("Encrypted Block Data:");
+      // System.out.println(formatHexPrint.formatHex(encryptedBlocks[i]));
+
+      // System.out.println("Round 10 Key:");
+      rdSubKey = grabSubkey(expandedKey, 10);
+      // System.out.println(formatHexPrint.formatHex(to1DArray(rdSubKey)));
+
+      // System.out.println("Round 10 Input:");
+      byte[][] rdAddKey = addRoundKey(state, rdSubKey);
+      // System.out.println(formatHexPrint.formatHex(to1DArray(rdAddKey)));
+
+      // System.out.println("Round 10 Inverse Shift Rows:");
+      rdInvShift = invShiftRows(rdAddKey);
+      // System.out.println(formatHexPrint.formatHex(to1DArray(rdInvShift)));
+
+      // System.out.println("Round 10 Inverse Sub Bytes:");
+      rdInvSubBytes = invSubBytes(rdInvShift);
+      // System.out.println(formatHexPrint.formatHex(to1DArray(rdInvSubBytes)));
+
+      for (int j = 9; j > 0; j--) {
+        // System.out.println("Round " + j + " Subkey:");
+        rdSubKey = grabSubkey(expandedKey, j);
+        // System.out.println(formatHexPrint.formatHex(to1DArray(rdSubKey)));
+
+        // System.out.println("Round " + j + " Add Round Key:");
+        rdAddKey = addRoundKey(rdInvSubBytes, rdSubKey);
+        // System.out.println(formatHexPrint.formatHex(to1DArray(rdAddKey)));
+
+        // System.out.println("Round " + j + " Inverse Mix Columns:");
+        rdInvMix = invMixColumns(rdAddKey);
+        // System.out.println(formatHexPrint.formatHex(to1DArray(rdInvMix)));
+
+        // System.out.println("Round " + j + " Inverse Shift Rows:");
+        rdInvShift = invShiftRows(rdInvMix);
+        // System.out.println(formatHexPrint.formatHex(to1DArray(rdInvShift)));
+
+        // System.out.println("Round " + j + " Inverse Sub Bytes:");
+        rdInvSubBytes = invSubBytes(rdInvShift);
+        // System.out.println(formatHexPrint.formatHex(to1DArray(rdInvSubBytes)));
+      }
+      // System.out.println("Final Key:");
+      rdSubKey = grabSubkey(expandedKey, 0);
+      // System.out.println(formatHexPrint.formatHex(to1DArray(rdSubKey)));
+
+      // System.out.println("Final Add Key:");
+      rdAddKey = addRoundKey(rdInvSubBytes, rdSubKey);
+      // System.out.println(formatHexPrint.formatHex(to1DArray(rdAddKey)));
+
+      decryptedBlocks[i] = to1DArray(rdAddKey);
+    }
+    // flatten decrypted blocks into 1D row major return val array
+    returnVal = new byte[(16*numberOfBlocks)];
+    int k = 0;  
+    for (int i = 0; i < numberOfBlocks; i++) { 
+        for (int j = 0; j < 16; j++) { 
+            returnVal[k++] = decryptedBlocks[i][j]; 
+        } 
+    } 
+    byte paddingValue = returnVal[returnVal.length - 1];
+    returnVal = Arrays.copyOfRange(returnVal, 0, returnVal.length - paddingValue);
+    return returnVal;
   }
 
   private byte[][] keyExpansion(byte[] key) {

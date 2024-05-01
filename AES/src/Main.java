@@ -1,3 +1,9 @@
+/*
+ * 
+ *  *** IMPORTANT: Requires JAVA SE 17 or later for java.util.HexFormat
+ */
+
+
 import java.nio.charset.StandardCharsets;
 import java.util.HexFormat;
 

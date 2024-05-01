@@ -1,48 +1,45 @@
+# Import necessary libraries
 import hashlib
-import random
 import time
-
-def generate_puzzle(B):
-    return random.getrandbits(B)
-
-def solve_crypto_puzzle(B):
-    start_time = time.time()
-    P = generate_puzzle(B)
-    target_hash = format(P, f'0{B}b')
-
-    trials = 0
-    while True:
-        message = random.getrandbits(256)
-        hash_result = hashlib.sha256(str(message).encode()).hexdigest()
-        if hash_result[-B:] == target_hash:
-            break
-        trials += 1
-
-    end_time = time.time()
-    time_taken = end_time - start_time
-    return time_taken, trials
-
-# Main
-Bs = [4, 8, 12, 16]
-avg_times = []
-
-for B in Bs:
-    total_time = 0
-    total_trials = 0
-    num_iterations = 1000  # Number of iterations for averaging
-    for _ in range(num_iterations):
-        time_taken, trials = solve_crypto_puzzle(B)
-        total_time += time_taken
-        total_trials += trials
-    avg_time = total_time / num_iterations
-    avg_trials = total_trials / num_iterations
-    avg_times.append(avg_time)
-    print(f"Average time for B={B}: {avg_time:.6f}s, Average trials: {avg_trials:.2f}")
-
-# Plotting the results
+import random
 import matplotlib.pyplot as plt
 
-plt.plot(Bs, avg_times, marker='o')
+# Function to solve the crypto puzzle
+def solve_puzzle(B, N):
+    # Initialize list to store times
+    times = []
+    # Run N trials
+    for _ in range(N):
+        # Generate random puzzle P of B bits
+        P = random.getrandbits(B)
+        # Start timer
+        start = time.time()
+        # Loop until solution is found
+        while True:
+            # Generate random message M of 256 bits
+            M = random.getrandbits(256)
+            # Compute SHA-256 hash of M
+            hash = int(hashlib.sha256(str(M).encode()).hexdigest(), 16)
+            # Check if last B bits of hash match P
+            if hash & ((1 << B) - 1) == P:
+                break
+        # Stop timer
+        end = time.time()
+        # Add elapsed time to list
+        times.append(end - start)
+    # Return average time over all trials
+    return sum(times) / N
+
+# List of B values to test
+Bs = [4, 8, 12, 16]
+# Compute average time for each B
+times = [solve_puzzle(B, 100) for B in Bs]
+# Print results
+for B, averageTime in zip(Bs, times):
+    print(f'Average time for B = {B}: {averageTime:.6f}s')
+
+# Plot results
+plt.plot(Bs, times, marker='o')
 plt.xlabel('B')
 plt.ylabel('Average Time to Solve (s)')
 plt.title('Average Time to Solve vs B')

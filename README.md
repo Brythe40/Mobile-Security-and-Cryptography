@@ -6,5 +6,6 @@ This project consists of three separate coding problems:
    >Mobile-Security-and-Cryptography/AES/aes/src
 2. RSA Cryptosystem (Python :snake:)
    >Mobile-Security-and-Cryptography/RSA Crypto System/RSA Crypto System
-3. SHA-256
+3. SHA-256 (Java :coffee:)
+   >Hash Crypto Puzzle/Hash Crypto Puzzle/hashPuzzle
 

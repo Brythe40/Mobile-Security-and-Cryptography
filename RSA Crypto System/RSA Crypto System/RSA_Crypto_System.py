@@ -12,7 +12,7 @@ primes = Prime_Checker.get_primes(1000)
 p = primes[9]
 q = primes[18]
 
-print("10th and 19th prime numbers: ", p, q)
+print("10th and 19th prime numbers: ", p, q, "\n")
 
 n = p * q
 e = 65537
@@ -23,8 +23,8 @@ private_key = {'d': d, 'p': p, 'q': q}
 
 message = "rsa"
 encrpt = Prime_Checker.encrypt(message, public_key)
-print("Encrypted message: ", encrpt)
+print("Encrypted message: ", encrpt, "\n")
 decrpt = Prime_Checker.decrypt(encrpt, private_key)
-print("Decrypted message: ", decrpt)
+print("Decrypted message: ", decrpt, "\n")
 
 Prime_Checker.exhaustive_search(public_key)

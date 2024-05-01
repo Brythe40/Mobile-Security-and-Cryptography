@@ -1,0 +1,50 @@
+import hashlib
+import random
+import time
+
+def generate_puzzle(B):
+    return random.getrandbits(B)
+
+def solve_crypto_puzzle(B):
+    start_time = time.time()
+    P = generate_puzzle(B)
+    target_hash = format(P, f'0{B}b')
+
+    trials = 0
+    while True:
+        message = random.getrandbits(256)
+        hash_result = hashlib.sha256(str(message).encode()).hexdigest()
+        if hash_result[-B:] == target_hash:
+            break
+        trials += 1
+
+    end_time = time.time()
+    time_taken = end_time - start_time
+    return time_taken, trials
+
+# Main
+Bs = [4, 8, 12, 16]
+avg_times = []
+
+for B in Bs:
+    total_time = 0
+    total_trials = 0
+    num_iterations = 1000  # Number of iterations for averaging
+    for _ in range(num_iterations):
+        time_taken, trials = solve_crypto_puzzle(B)
+        total_time += time_taken
+        total_trials += trials
+    avg_time = total_time / num_iterations
+    avg_trials = total_trials / num_iterations
+    avg_times.append(avg_time)
+    print(f"Average time for B={B}: {avg_time:.6f}s, Average trials: {avg_trials:.2f}")
+
+# Plotting the results
+import matplotlib.pyplot as plt
+
+plt.plot(Bs, avg_times, marker='o')
+plt.xlabel('B')
+plt.ylabel('Average Time to Solve (s)')
+plt.title('Average Time to Solve vs B')
+plt.grid(True)
+plt.show()

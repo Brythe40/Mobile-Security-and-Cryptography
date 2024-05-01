@@ -56,6 +56,9 @@ public class AES {
     {0x0b, 0x0d, 0x09, 0x0e}
   };
 
+
+  // hardcoded expanded key attribute; would be the result of
+  // AES's key schedule algorithm if the key "secretsecretsec" was used
   private final byte[][] expandedKey = {
     { (byte) 0x73, (byte) 0x65, (byte) 0x63, (byte) 0x73 },
     { (byte) 0x65, (byte) 0x74, (byte) 0x72, (byte) 0x65 },
@@ -248,15 +251,10 @@ public class AES {
     return returnVal;
   }
 
+  // TODO: implement AES key expansion algorithm
   private byte[][] keyExpansion(byte[] key) {
     byte[][] expandedKey = new byte[4][16];
-    // for (int i = 0; i < 16; i++)
-    // {
-    // for (int j = 0; j < 4; j++) {
-    // keyMatrix[j][i] = Integer.parseInt(key.substring((8 * i) + (2 * j), (8 * i) +
-    // (2 * j + 2)), 16);
-    // }
-    // }
+ 
     return expandedKey;
   }
 
@@ -309,6 +307,12 @@ public class AES {
     return subkey;
   }
 
+  /**
+   * XOR the state with the round key; Byte-level operation
+   * @param state current state matrix
+   * @param rndKey current round key
+   * @return new state matrix
+   */
   private byte[][] addRoundKey(byte[][] state, byte[][] rndKey) {
     byte[][] newState = new byte[4][4];
     for (int i = 0; i < newState.length; i++) {
@@ -381,22 +385,28 @@ public class AES {
 
   /**
    * galois field GF(2^8) multiplication helper function for @multi;
-   * GF multiplication by 2
+   * GF multiplication by 2 (00000010 in binary) is equivalent to multiplication by polynomial X
+   * each term of the polynomial represented by x is raised by one, equivalent to a left shift
+   * 
    * @param x byte to multiply by 2
    * @return byte resulting from multiplication 
    */
   private byte multi2(byte x){
+    // store leftmost bit of x
     byte leftmost = (byte) (x & 0x80);
     x = (byte) (x << 1);
+    // if leftmost bit is 1 after left shifting (represents a polynomial of degree 8, which must be reduced)
     if (leftmost != 0) {
+      // modular reduction
       x = (byte) (x ^ 0x1b);
     }
     return x;
   }
 
   /**
-   * galois field GF(2^8) multiplication helper function for mixColumn
-   * 
+   * galois field GF(2^8) multiplication helper function for mixColumn;
+   * addition "+" in GF(2^8) is equivalent to XOR ;
+   *  
    * @param x byte from state matrix
    * @param y byte from predefined matrix (either 0x01, 0x02, 0x03, 0x0e, 0x0b, 0x0d, 0x09)
    * @return byte resulting from multiplication of elements in galois field
@@ -409,29 +419,32 @@ public class AES {
         val = x;
         break;
       }
-      // multiply by 2 --> shortcut: logical left shift 1; if logical left shift 1
-      // dropped a 1,
-      // XOR with 0x1b, which represents
+      // x * 2
       case 0x02: {
         val = multi2(x);
         break;
       }
+      // x * 3 --> (x * 2) + x
       case 0x03: {
         val = (byte)(multi2(x) ^ x);
         break;
       }
+      // x * 9 --> (((x * 2) * 2) * 2) + x
       case 0x09: {
         val = (byte)(multi2(multi2(multi2(x))) ^ x);
         break;
       }
+      // x * 11 --> ((((x * 2) * 2) + x) * 2) + x
       case 0x0b: {
         val = (byte)(multi2((byte)(multi2(multi2(x)) ^ x))^x);
         break;
       }
+      // x * 13 --> ((((x * 2) + x) * 2) * 2) + x
       case 0x0d: {
         val = (byte)(multi2(multi2((byte)(multi2(x) ^ x)))^x);
         break;
       }
+      // x * 14 --> ((((x * 2) + x) * 2) + x) * 2
       case 0x0e: {
         val = (byte)(multi2((byte)(multi2((byte)(multi2(x) ^ x))^x)));
         break;
@@ -440,6 +453,13 @@ public class AES {
     return val;
   }
 
+  /**
+   * diffuses the state matrix; implementation of Rijndael MixColumns, in which each column
+   * of state matrix represents a four-term polynomial; invovles polynomial multiplication
+   * and modular reduction
+   * @param state current state matrix
+   * @return new state matrix
+   */
   private byte[][] mixColumns(byte[][] state) {
     byte[][] newState = new byte[4][4];
     for (int i = 0; i < newState.length; i++) {

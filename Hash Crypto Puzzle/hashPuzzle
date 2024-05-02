@@ -33,7 +33,7 @@ def solve_puzzle(B, N):
 # List of B values to test
 Bs = [4, 8, 12, 16]
 # Compute average time for each B
-times = [solve_puzzle(B, 100) for B in Bs]
+times = [solve_puzzle(B, 1000) for B in Bs]
 # Print results
 for B, averageTime in zip(Bs, times):
     print(f'Average time for B = {B}: {averageTime:.6f}s')

@@ -8,4 +8,4 @@ This project consists of three separate coding problems:
 2. RSA Cryptosystem (Python :snake:)
    >Mobile-Security-and-Cryptography/RSA Crypto System/RSA Crypto System
 3. SHA-256 (Python :snake:)
-   >Hash Crypto Puzzle/Hash Crypto Puzzle/hashPuzzle
+   >Hash Crypto Puzzle/hashPuzzle

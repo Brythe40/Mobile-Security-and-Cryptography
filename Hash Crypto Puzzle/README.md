@@ -10,7 +10,13 @@ This Python script implements a hash-based crypto puzzle using the SHA-256 hashi
 ## Usage
 
 1. Clone the repository to your local machine.
-2. Run the script using Python 3.6 or higher.
+2. Install the latest version of the matplotlib library
+
+```bash
+pip install matplotlib
+```
+
+3. Run the script using Python 3.6 or higher.
 
 ```bash
 python3 crypto_puzzle.py
